@@ -1,19 +1,32 @@
 import React, { useState } from 'react';
-import { Search, Bell, Home, Award, Users } from 'lucide-react';
+import { Search, Bell, Home, Award, Users, ArrowLeft } from 'lucide-react';
+import BalloonGame from './features/games/components/BalloonGame';
+import StoryMode from './features/games/components/StoryTelling/StoryMode';
+import BionicReaderApp from './features/bionic-reader/BionicReaderApp';
 
 export default function Dashboard() {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
+    const [activeFeature, setActiveFeature] = useState(null); // null, 'word-detective', 'reading-lens', 'story-weaver'
 
-    const handleCourseClick = (courseName) => {
+    const handleCourseClick = (courseName, featureId) => {
         setSelectedCourse(courseName);
-        setTimeout(() => setSelectedCourse(null), 2000);
+        setTimeout(() => {
+            setSelectedCourse(null);
+            setActiveFeature(featureId);
+        }, 1500);
+    };
+
+    const handleBackToDashboard = () => {
+        setActiveFeature(null);
+        setActiveTab('home');
     };
 
     const courses = [
         {
             id: 1,
             title: 'Word Detective',
+            featureId: 'word-detective',
             color: 'bg-[#C5D89D]',
             hoverColor: 'hover:bg-[#B5C88D]',
             icon: '🔍',
@@ -22,6 +35,7 @@ export default function Dashboard() {
         {
             id: 2,
             title: 'Reading Lens',
+            featureId: 'reading-lens',
             color: 'bg-[#EEEEEE]',
             hoverColor: 'hover:bg-[#E0E0E0]',
             icon: '👓',
@@ -30,6 +44,7 @@ export default function Dashboard() {
         {
             id: 3,
             title: 'Story Weaver',
+            featureId: 'story-weaver',
             color: 'bg-[#EDEDCE]',
             hoverColor: 'hover:bg-[#EBEBC0]',
             icon: '📖',
@@ -37,84 +52,88 @@ export default function Dashboard() {
         }
     ];
 
+    // Render active feature
+    if (activeFeature === 'word-detective') {
+        return (
+            <div className="min-h-screen">
+                <button
+                    onClick={handleBackToDashboard}
+                    className="fixed top-4 left-4 z-50 flex items-center gap-2 bg-white/90 backdrop-blur-sm text-gray-700 hover:text-gray-900 px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    style={{ fontFamily: "'Comic Neue', 'Comic Sans MS', cursive" }}
+                >
+                    <ArrowLeft size={20} />
+                    Back to Dashboard
+                </button>
+                <BalloonGame />
+            </div>
+        );
+    }
+
+    if (activeFeature === 'reading-lens') {
+        return <BionicReaderApp onBack={handleBackToDashboard} />;
+    }
+
+    if (activeFeature === 'story-weaver') {
+        return (
+            <div className="min-h-screen bg-gradient-to-b from-orange-50 via-yellow-50 to-amber-50 p-6">
+                <button
+                    onClick={handleBackToDashboard}
+                    className="mb-6 flex items-center gap-2 bg-gradient-to-r from-orange-400 to-amber-400 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    style={{ fontFamily: "'Comic Neue', 'Comic Sans MS', cursive" }}
+                >
+                    <ArrowLeft size={20} />
+                    Back to Dashboard
+                </button>
+                <StoryMode />
+            </div>
+        );
+    }
+
+    // Dashboard View
     return (
-        <div className="min-h-screen bg-gradient-to-b from-sky-100 via-purple-50 to-pink-50 relative overflow-hidden pb-24">
-            {/* Decorative Clouds - More Faded */}
-            <div className="absolute top-10 left-10 w-32 h-20 bg-white rounded-full opacity-30 blur-md"></div>
-            <div className="absolute top-20 right-20 w-40 h-24 bg-white rounded-full opacity-25 blur-md"></div>
-            <div className="absolute top-40 left-1/4 w-28 h-16 bg-white rounded-full opacity-20 blur-md"></div>
-            <div className="absolute top-60 right-1/3 w-36 h-20 bg-white rounded-full opacity-25 blur-md"></div>
-            <div className="absolute bottom-40 left-1/2 w-32 h-18 bg-white rounded-full opacity-20 blur-md"></div>
-            <div className="absolute top-32 right-10 w-24 h-16 bg-white rounded-full opacity-20 blur-md"></div>
+        <div className="min-h-screen bg-gradient-to-b from-orange-50 via-yellow-50 to-amber-50 relative overflow-hidden pb-24" style={{ fontFamily: "'Comic Neue', 'Comic Sans MS', cursive" }}>
+            {/* Decorative Clouds - Warm tones */}
+            <div className="absolute top-10 left-10 w-32 h-20 bg-orange-100 rounded-full opacity-30 blur-md"></div>
+            <div className="absolute top-20 right-20 w-40 h-24 bg-yellow-100 rounded-full opacity-25 blur-md"></div>
+            <div className="absolute top-40 left-1/4 w-28 h-16 bg-amber-100 rounded-full opacity-20 blur-md"></div>
+            <div className="absolute top-60 right-1/3 w-36 h-20 bg-orange-100 rounded-full opacity-25 blur-md"></div>
+            <div className="absolute bottom-40 left-1/2 w-32 h-18 bg-yellow-100 rounded-full opacity-20 blur-md"></div>
+            <div className="absolute top-32 right-10 w-24 h-16 bg-amber-100 rounded-full opacity-20 blur-md"></div>
 
-            {/* Trees */}
-            <div className="absolute bottom-24 left-10 opacity-30">
-                <div className="text-8xl">🌳</div>
-            </div>
-            <div className="absolute bottom-24 right-16 opacity-30">
-                <div className="text-7xl">🌲</div>
-            </div>
-            <div className="absolute bottom-32 left-32 opacity-25">
-                <div className="text-6xl">🌳</div>
-            </div>
-            <div className="absolute bottom-28 right-40 opacity-25">
-                <div className="text-6xl">🌲</div>
-            </div>
-
-            {/* Kids Props */}
-            <div className="absolute top-1/4 left-5 opacity-40 animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}>
-                <div className="text-5xl">🎈</div>
-            </div>
-            <div className="absolute top-1/3 right-10 opacity-40 animate-bounce" style={{ animationDelay: '1s', animationDuration: '4s' }}>
-                <div className="text-4xl">⭐</div>
-            </div>
-            <div className="absolute bottom-1/3 left-16 opacity-35">
-                <div className="text-5xl">🎨</div>
-            </div>
-            <div className="absolute top-1/2 right-24 opacity-35 animate-bounce" style={{ animationDelay: '2s', animationDuration: '5s' }}>
-                <div className="text-4xl">🎭</div>
-            </div>
-            <div className="absolute bottom-1/2 left-1/4 opacity-30">
-                <div className="text-5xl">✏️</div>
-            </div>
-            <div className="absolute top-2/3 right-1/3 opacity-35 animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '4.5s' }}>
-                <div className="text-4xl">🌈</div>
-            </div>
-            <div className="absolute bottom-1/4 right-12 opacity-30">
-                <div className="text-5xl">🎪</div>
-            </div>
-            <div className="absolute top-1/4 left-1/3 opacity-35">
-                <div className="text-4xl">🦋</div>
-            </div>
-
-            {/* Desktop Layout */}
             {/* Desktop Layout */}
             <div className="max-w-5xl mx-auto p-4 relative z-10">
-                {/* Header */}
-                <header className="flex items-center justify-end mb-8 bg-white/80 backdrop-blur-sm rounded-3xl px-6 py-4 shadow-lg">
+                {/* Header - Proper Navbar */}
+                <header className="flex items-center justify-between mb-8 bg-gradient-to-r from-orange-100 to-yellow-100 backdrop-blur-sm rounded-3xl px-6 py-4 shadow-lg border-2 border-orange-200">
+                    <div className="flex items-center gap-3">
+                        <div className="text-3xl">🌟</div>
+                        <h1 className="text-2xl font-bold text-orange-800" style={{ fontFamily: "'Fredoka', 'Comic Neue', cursive" }}>
+                            Creative Kids Academy
+                        </h1>
+                    </div>
                     <div className="flex items-center gap-4">
-                        <button className="p-3 hover:bg-purple-100 rounded-full transition-colors">
-                            <Search size={24} className="text-purple-600" />
+                        <button className="p-3 hover:bg-orange-200 rounded-full transition-colors">
+                            <Search size={24} className="text-orange-600" />
                         </button>
-                        <button className="p-3 hover:bg-purple-100 rounded-full transition-colors">
-                            <Bell size={24} className="text-purple-600" />
+                        <button className="p-3 hover:bg-orange-200 rounded-full transition-colors">
+                            <Bell size={24} className="text-orange-600" />
                         </button>
-                        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full shadow-lg"></div>
+                        <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full shadow-lg border-2 border-orange-300"></div>
                     </div>
                 </header>
 
                 {/* Main Content */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl">
+                <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border-2 border-orange-200">
                     {/* Title Section */}
                     <div className="text-center mb-12">
                         <div className="flex justify-center mb-6">
-                            <div className="w-24 h-24 bg-gradient-to-br from-lime-300 to-emerald-400 rounded-full flex items-center justify-center shadow-xl animate-bounce">
-                                <span className="text-5xl">✦</span>
+                            <div className="w-24 h-24 bg-gradient-to-br from-orange-300 to-amber-400 rounded-full flex items-center justify-center shadow-xl">
+                                <span className="text-5xl">✨</span>
                             </div>
                         </div>
-                        <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">Creative</h1>
-                        <h2 className="text-3xl font-serif italic bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Kids Academy</h2>
-                        <p className="text-gray-600 text-xl mt-6 max-w-2xl mx-auto">
+                        <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent" style={{ fontFamily: "'Fredoka', 'Comic Neue', cursive" }}>
+                            Welcome to Creative Kids Academy!
+                        </h1>
+                        <p className="text-orange-700 text-xl mt-4 max-w-2xl mx-auto font-semibold">
                             Where young minds flourish and explore! 🌟
                         </p>
                     </div>
@@ -124,36 +143,37 @@ export default function Dashboard() {
                         {courses.map((course) => (
                             <button
                                 key={course.id}
-                                onClick={() => handleCourseClick(course.title)}
-                                className={`${course.color} ${course.hoverColor} rounded-3xl p-4 relative overflow-hidden w-48 h-48 flex flex-col items-center justify-center text-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl group`}
+                                onClick={() => handleCourseClick(course.title, course.featureId)}
+                                className={`${course.color} ${course.hoverColor} rounded-3xl p-4 relative overflow-hidden w-48 h-48 flex flex-col items-center justify-center text-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl group border-2 border-orange-200`}
                             >
                                 <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
                                     <span className={course.size}>{course.icon}</span>
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-800">{course.title}</h3>
+                                <h3 className="text-2xl font-bold text-orange-900" style={{ fontFamily: "'Fredoka', 'Comic Neue', cursive" }}>{course.title}</h3>
                             </button>
                         ))}
                     </div>
 
                     {/* Selected Course Indicator */}
                     {selectedCourse && (
-                        <div className="mt-6 p-6 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl text-center animate-bounce shadow-lg">
-                            <p className="text-2xl font-bold text-purple-600">🎉 Great choice! You selected: {selectedCourse} 🎉</p>
+                        <div className="mt-6 p-6 bg-gradient-to-r from-orange-200 to-amber-200 rounded-2xl text-center shadow-lg border-2 border-orange-300">
+                            <p className="text-2xl font-bold text-orange-800" style={{ fontFamily: "'Comic Neue', 'Comic Sans MS', cursive" }}>🎉 Great choice! You selected: {selectedCourse} 🎉</p>
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* Bottom Navigation - Fixed at bottom */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-2xl border-t-4 border-purple-200 z-50">
+            {/* Bottom Navigation - Fixed at bottom with warm colors */}
+            <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-100 to-yellow-100 backdrop-blur-sm shadow-2xl border-t-4 border-orange-300 z-50">
                 <div className="max-w-4xl mx-auto px-6 py-4">
-                    <div className="flex justify-center gap-12">
+                    <div className="flex justify-center gap-8">
                         <button
                             onClick={() => setActiveTab('home')}
-                            className={`flex flex-col items-center justify-center px-8 py-3 rounded-full transition-all duration-300 ${activeTab === 'home'
-                                ? 'bg-[#EDEDCE] text-purple-900 scale-110 shadow-xl border-4 border-purple-300'
-                                : 'bg-[#EDEDCE] text-purple-700 hover:bg-[#EBEBC0]'
+                            className={`flex flex-col items-center justify-center px-8 py-3 rounded-2xl transition-all duration-300 ${activeTab === 'home'
+                                ? 'bg-gradient-to-br from-orange-400 to-amber-400 text-white scale-110 shadow-xl border-4 border-orange-500'
+                                : 'bg-orange-200 text-orange-800 hover:bg-orange-300 border-2 border-orange-300'
                                 }`}
+                            style={{ fontFamily: "'Comic Neue', 'Comic Sans MS', cursive" }}
                         >
                             <Home size={28} strokeWidth={2.5} />
                             <span className="text-lg font-bold mt-2">Home</span>
@@ -161,10 +181,11 @@ export default function Dashboard() {
 
                         <button
                             onClick={() => setActiveTab('achievements')}
-                            className={`flex flex-col items-center justify-center px-8 py-3 rounded-full transition-all duration-300 ${activeTab === 'achievements'
-                                ? 'bg-[#EEEEEE] text-amber-900 scale-110 shadow-xl border-4 border-amber-300'
-                                : 'bg-[#EEEEEE] text-amber-700 hover:bg-[#E0E0E0]'
+                            className={`flex flex-col items-center justify-center px-8 py-3 rounded-2xl transition-all duration-300 ${activeTab === 'achievements'
+                                ? 'bg-gradient-to-br from-amber-400 to-yellow-400 text-white scale-110 shadow-xl border-4 border-amber-500'
+                                : 'bg-amber-200 text-amber-800 hover:bg-amber-300 border-2 border-amber-300'
                                 }`}
+                            style={{ fontFamily: "'Comic Neue', 'Comic Sans MS', cursive" }}
                         >
                             <Award size={28} strokeWidth={2.5} />
                             <span className="text-lg font-bold mt-2">Achievements</span>
@@ -172,10 +193,11 @@ export default function Dashboard() {
 
                         <button
                             onClick={() => setActiveTab('parents')}
-                            className={`flex flex-col items-center justify-center px-8 py-3 rounded-full transition-all duration-300 ${activeTab === 'parents'
-                                ? 'bg-[#C5D89D] text-emerald-900 scale-110 shadow-xl border-4 border-emerald-300'
-                                : 'bg-[#C5D89D] text-emerald-700 hover:bg-[#B5C88D]'
+                            className={`flex flex-col items-center justify-center px-8 py-3 rounded-2xl transition-all duration-300 ${activeTab === 'parents'
+                                ? 'bg-gradient-to-br from-yellow-400 to-orange-400 text-white scale-110 shadow-xl border-4 border-yellow-500'
+                                : 'bg-yellow-200 text-yellow-800 hover:bg-yellow-300 border-2 border-yellow-300'
                                 }`}
+                            style={{ fontFamily: "'Comic Neue', 'Comic Sans MS', cursive" }}
                         >
                             <Users size={28} strokeWidth={2.5} />
                             <span className="text-lg font-bold mt-2">Parents</span>
