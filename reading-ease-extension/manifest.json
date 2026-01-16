@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Reading Ease",
+  "version": "1.0",
+  "description": "Make reading easier on any webpage with Bionic Reading formatting.",
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
