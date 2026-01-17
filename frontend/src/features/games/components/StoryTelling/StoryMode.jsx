@@ -13,14 +13,14 @@ const DEMO_SCRIPT = [
     {
         phase: 0,
         speaker: 'avatar',
-        text: "Come, I want to hear a story! Can you help me build it?",
+        text: "Wow! I'm so excited to create a story with you! Let's make it amazing!",
         image: null, // No image for intro conversation
         actionRequired: false
     },
     {
         phase: 1,
         speaker: 'avatar',
-        text: "I saw a fluffy white cloud crying because it was hungry.",
+        text: "I saw a fluffy white cloud crying because it was hungry. So sad!",
         image: img1,
         actionRequired: false
     },
@@ -34,7 +34,7 @@ const DEMO_SCRIPT = [
     {
         phase: 3,
         speaker: 'avatar',
-        text: "Suddenly, a pizza plane flew by and... CHOMP! The cloud turned orange!",
+        text: "Suddenly, a pizza plane flew by and... CHOMP! The cloud turned orange! How fun!",
         image: img3,
         actionRequired: false
     },
@@ -48,7 +48,7 @@ const DEMO_SCRIPT = [
     {
         phase: 5,
         speaker: 'avatar',
-        text: "Yum! It was the most delicious rainstorm ever. The End!",
+        text: "Yum! It was the most delicious rainstorm ever. What an awesome story! The End!",
         image: img5,
         actionRequired: false
     }
@@ -82,20 +82,68 @@ const StoryMode = () => {
         return voices.find(v => v.lang.startsWith('en')) || voices[0];
     };
 
-    // Helper for TTS
+    // Helper for TTS with emotion and slower pacing
     const speakText = (text) => {
         window.speechSynthesis.cancel();
         setIsTTSActive(true);
-        const utterance = new SpeechSynthesisUtterance(text);
-        const voice = getKidVoice();
-        if (voice) utterance.voice = voice;
-        utterance.pitch = 1.4;
-        utterance.rate = 1.1;
 
-        utterance.onend = () => setIsTTSActive(false);
-        utterance.onerror = () => setIsTTSActive(false);
+        // Detect emotional content for varied delivery
+        const lowerText = text.toLowerCase();
+        const isExcited = text.includes('!') ||
+            text.includes('CHOMP') ||
+            text.includes('Yum') ||
+            lowerText.includes('wow') ||
+            lowerText.includes('amazing') ||
+            lowerText.includes('awesome') ||
+            lowerText.includes('fun') ||
+            lowerText.includes('excited');
 
-        window.speechSynthesis.speak(utterance);
+        const isQuestion = text.includes('?');
+        const isSad = text.includes('crying') || text.includes('hungry') || text.includes('sad');
+
+        // Split into sentences for natural pauses
+        const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+
+        let currentIndex = 0;
+
+        const speakNextSentence = () => {
+            if (currentIndex >= sentences.length) {
+                setIsTTSActive(false);
+                return;
+            }
+
+            const sentence = sentences[currentIndex].trim();
+            const utterance = new SpeechSynthesisUtterance(sentence);
+            const voice = getKidVoice();
+            if (voice) utterance.voice = voice;
+
+            // Emotional variation - NORMAL AND HAPPY TONE
+            if (isExcited) {
+                utterance.pitch = 1.6;  // Friendly excited pitch
+                utterance.rate = 0.8;   // Natural pace for excitement
+            } else if (isQuestion) {
+                utterance.pitch = 1.5;  // Friendly questioning tone
+                utterance.rate = 0.7;
+            } else if (isSad) {
+                utterance.pitch = 1.2;  // Gentle and sympathetic
+                utterance.rate = 0.65;
+            } else {
+                utterance.pitch = 1.4;  // Normal happy base pitch
+                utterance.rate = 0.7;   // Slow and clear base rate
+            }
+
+            utterance.onend = () => {
+                currentIndex++;
+                // Natural pause between sentences
+                setTimeout(speakNextSentence, 1200);
+            };
+
+            utterance.onerror = () => setIsTTSActive(false);
+
+            window.speechSynthesis.speak(utterance);
+        };
+
+        speakNextSentence();
     };
 
     // Effect to handle Avatar turns automatically or reset for Kid turns

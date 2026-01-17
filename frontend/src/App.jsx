@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { Search, Bell, Home, Award, Users, ArrowLeft } from 'lucide-react';
+import { Home, Award, Users, ArrowLeft, User } from 'lucide-react';
 import BalloonGame from './features/games/components/BalloonGame';
 import StoryMode from './features/games/components/StoryTelling/StoryMode';
 import BionicReaderApp from './features/bionic-reader/BionicReaderApp';
 import SnowmanAvatar from './features/games/components/SnowmanAvatar';
 import AchievementsTab from './components/AchievementsTab';
 import ParentsTab from './components/ParentsTab';
+import WordOfTheDay from './components/WordOfTheDay';
+import ProfileModal from './components/ProfileModal';
 
 export default function Dashboard() {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
     const [activeFeature, setActiveFeature] = useState(null); // null, 'word-detective', 'reading-lens', 'story-weaver'
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isAvatarSpeaking, setIsAvatarSpeaking] = useState(false);
 
     const handleCourseClick = (courseName, featureId) => {
         setSelectedCourse(courseName);
@@ -110,17 +114,16 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3">
                         <div className="text-3xl">🌟</div>
                         <h1 className="text-2xl font-bold text-orange-800" style={{ fontFamily: "'Fredoka', 'Comic Neue', cursive" }}>
-                            Creative Kids Academy
+                            Ollie Reads
                         </h1>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button className="p-3 hover:bg-orange-200 rounded-full transition-colors">
-                            <Search size={24} className="text-orange-600" />
+                        <button
+                            onClick={() => setIsProfileOpen(true)}
+                            className="w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full shadow-lg border-2 border-orange-300 hover:scale-110 transition-transform flex items-center justify-center cursor-pointer"
+                        >
+                            <User size={24} className="text-white" />
                         </button>
-                        <button className="p-3 hover:bg-orange-200 rounded-full transition-colors">
-                            <Bell size={24} className="text-orange-600" />
-                        </button>
-                        <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full shadow-lg border-2 border-orange-300"></div>
                     </div>
                 </header>
 
@@ -138,7 +141,7 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                                 <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent" style={{ fontFamily: "'Fredoka', 'Comic Neue', cursive" }}>
-                                    Welcome to Creative Kids Academy!
+                                    Welcome to Ollie Reads!
                                 </h1>
                                 <p className="text-orange-700 text-xl mt-4 max-w-2xl mx-auto font-semibold">
                                     Where young minds flourish and explore! 🌟
@@ -222,15 +225,25 @@ export default function Dashboard() {
                 </div>
             </div>
 
+            {/* Word of the Day - positioned next to avatar */}
+            {activeTab === 'home' && !activeFeature && (
+                <div style={{ position: 'fixed', bottom: '420px', right: '150px', zIndex: 65 }}>
+                    <WordOfTheDay onSpeakingChange={setIsAvatarSpeaking} />
+                </div>
+            )}
+
             {/* Global Avatar for Homepage */}
-            <div style={{ position: 'fixed', bottom: '0', left: '0', zIndex: 60, pointerEvents: 'none' }}>
+            <div style={{ position: 'fixed', bottom: '0', right: '0', zIndex: 60, pointerEvents: 'none' }}>
                 <SnowmanAvatar
                     size="xlarge"
                     isVisible={true}
-                    isSpeaking={false}
+                    isSpeaking={isAvatarSpeaking}
                     emotion="happy"
                 />
             </div>
+
+            {/* Profile Modal */}
+            <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
         </div>
     );
 }
